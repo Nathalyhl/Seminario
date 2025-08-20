@@ -69,11 +69,17 @@ jobs:
     needs: build
     environment:
       name: Development
-      url: ${{ steps.deploy-to-webapp-step.outputs.webapp-url }}  # Cambiar aquí
+      url: ${{ steps.deploy-to-webapp-step.outputs.webapp-url }}
 
     steps:
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
+      # Login en Azure con el Service Principal
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Secreto con las credenciales del Service Principal
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp-step  # Cambié este identificador para que sea único
